@@ -96,11 +96,89 @@ public class JDBC_ejers {
         }
     }
 
-    public void ej5() {
+    public void ej5a(String pais) {
+        String query = "SELECT pais, COUNT(pais) AS \"Nº Naves\" FROM naves WHERE pais = '" + pais + "'";
+        // SELECT pais, COUNT(pais) AS "Nº Naves" FROM naves WHERE pais = "USA"
+        System.out.println(query);
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + "\t" + resultSet.getInt(2));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej5b(String pais) {
+        String query = "SELECT pais, estado, COUNT(estado) AS \"Nº Naves\" FROM naves WHERE pais = '" + pais + "' GROUP BY estado";
+        // SELECT pais, estado, COUNT(estado) AS "Nº Naves" FROM naves WHERE pais = "USA" GROUP BY estado;
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t" + resultSet.getInt(3));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej5c() {
+        String query = "SELECT pais, estado FROM naves WHERE estado IS NULL";
+        // SELECT pais, estado FROM naves WHERE estado IS NULL
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej5d() {
+        String query = "SELECT nombre, volumenUtil FROM naves ORDER BY volumenUtil DESC LIMIT 1 OFFSET 1";
+        String query2 = "SELECT nombre, volumenUtil FROM naves ORDER BY volumenUtil DESC LIMIT 1 OFFSET 2";
+        // SELECT nombre, MAX(volumenUtil) FROM naves LIMIT 1;
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+            ResultSet resultSet2 = statement.executeQuery(query2);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1) + "\t" + resultSet.getDouble(2));
+            }
+            while (resultSet2.next()) {
+                System.out.println(resultSet2.getString(1) + "\t" + resultSet2.getDouble(2));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_1a(String nombre, double valor) {
         String query = "";
 
         try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
 
+            System.out.println(nombre);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(nombre));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_1b(String nombre, String valor) {
+        String query = "";
+
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(query);
+
+            System.out.println(nombre);
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(nombre));
+            }
         } catch (SQLException e) {
             System.out.println("Error " + e.getLocalizedMessage());
         }
@@ -112,12 +190,14 @@ public class JDBC_ejers {
         try {
             Class.forName("org.mariadb.jdbc.Driver");
         } catch (ClassNotFoundException e) {
-            System.out.println("Fallo al buscar el driver: " + e.getLocalizedMessage());
+            System.out.println("Fallo al buscar el driver. No se ha encontrado. " + e.getLocalizedMessage());
         }
 
         jdbc.abreConexion("add", "localhost", "root", "");
         //jdbc.ej1("pais", "Japón");
-        jdbc.ej4("Nuegbrdtyue2332", "Nuevthrs3244", "Nuevohcnte234", "NuENTO23423");
+        //jdbc.ej4("Nuegbrdtyue2332", "Nuevthrs3244", "Nuevohcnte234", "NuENTO23423");
+        //jdbc.ej5a("USA");
+        jdbc.ej5d();
         jdbc.cierraConexion();
     }
 }
