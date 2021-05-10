@@ -3,6 +3,7 @@ import java.sql.*;
 
 public class JDBC_ejers {
     Connection conexion;
+    PreparedStatement ps = null;
 
     public void abreConexion(String bd, String server, String user, String password) {
         try {
@@ -46,7 +47,7 @@ public class JDBC_ejers {
 
     public void ej1(String nombre, String valor) {
         String query = "select " + nombre + " from naves where " + nombre + " = '" + valor + "' ";
-
+        // select pais from naves where pais = "usa";
         try (Statement statement = this.conexion.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
 
@@ -111,8 +112,10 @@ public class JDBC_ejers {
     }
 
     public void ej5b(String pais) {
-        String query = "SELECT pais, estado, COUNT(estado) AS \"Nº Naves\" FROM naves WHERE pais = '" + pais + "' GROUP BY estado";
-        // SELECT pais, estado, COUNT(estado) AS "Nº Naves" FROM naves WHERE pais = "USA" GROUP BY estado;
+        String query = "SELECT pais, estado, COUNT(estado) AS \"Nº Naves\" FROM naves WHERE pais = '" + pais
+                + "' GROUP BY estado";
+        // SELECT pais, estado, COUNT(estado) AS "Nº Naves" FROM naves WHERE pais =
+        // "USA" GROUP BY estado;
         try (Statement statement = this.conexion.createStatement()) {
             ResultSet resultSet = statement.executeQuery(query);
             while (resultSet.next()) {
@@ -155,14 +158,21 @@ public class JDBC_ejers {
     }
 
     public void ej6_1a(String nombre, double valor) {
-        String query = "";
+
+        String query = "select " + nombre + " from naves where " + nombre + " = ?";
 
         try (Statement statement = this.conexion.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
+            ResultSet resultSet;
 
-            System.out.println(nombre);
-            while (resultSet.next()) {
-                System.out.println(resultSet.getString(nombre));
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ps.setDouble(1, valor);
+                resultSet = ps.executeQuery();
+
+                while (resultSet.next()) {
+                    System.out.println(resultSet.getString(nombre));
+                }
             }
         } catch (SQLException e) {
             System.out.println("Error " + e.getLocalizedMessage());
@@ -170,14 +180,229 @@ public class JDBC_ejers {
     }
 
     public void ej6_1b(String nombre, String valor) {
-        String query = "";
+
+        String query = "select " + nombre + " from naves where " + nombre + " = ?";
 
         try (Statement statement = this.conexion.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
+            ResultSet resultSet;
 
-            System.out.println(nombre);
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ps.setString(1, valor);
+                resultSet = ps.executeQuery();
+
+                while (resultSet.next()) {
+                    System.out.println(resultSet.getString(nombre));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_2(int valor) {
+        String query = "delete from naves where id = ?";
+        int filas = 0;
+
+        try (Statement statement = this.conexion.createStatement()) {
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ps.setInt(1, valor);
+                filas = ps.executeUpdate();
+
+                System.out.println("Filas eliminadas: " + filas);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_3(String nombre, String pais, String fabricante, int id) {
+        String query = "update naves set nombre = ?, pais = ?, fabricante = ? where id = ?";
+        int filas = 0;
+
+        try (Statement statement = this.conexion.createStatement()) {
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ps.setString(1, nombre);
+                ps.setString(2, pais);
+                ps.setString(3, fabricante);
+                ps.setInt(4, id);
+                filas = ps.executeUpdate();
+
+                System.out.println("Filas actualizadas: " + filas);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_4(String nombre, String pais, String fabricante, String lanzamiento) {
+        String query = "insert into naves (nombre, pais, fabricante, SistemaLanzamiento) values (?, ?, ?, ?)";
+        int filas = 0;
+
+        try (Statement statement = this.conexion.createStatement()) {
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ps.setString(1, nombre);
+                ps.setString(2, pais);
+                ps.setString(3, fabricante);
+                ps.setString(4, lanzamiento);
+                filas = ps.executeUpdate();
+
+                System.out.println("Filas actualizadas: " + filas);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_5a(String pais) {
+        String query = "SELECT pais, COUNT(pais) AS \"Nº Naves\" FROM naves WHERE pais = ?";
+        // SELECT pais, COUNT(pais) AS "Nº Naves" FROM naves WHERE pais = "USA"
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet;
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ps.setString(1, pais);
+                resultSet = ps.executeQuery();
+
+                while (resultSet.next()) {
+                    System.out.println(resultSet.getString(1) + "\t" + resultSet.getInt(2));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_5b(String pais) {
+        String query = "SELECT pais, estado, COUNT(estado) AS \"Nº Naves\" FROM naves WHERE pais = ? GROUP BY estado";
+        // SELECT pais, estado, COUNT(estado) AS "Nº Naves" FROM naves WHERE pais =
+        // "USA" GROUP BY estado;
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet;
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ps.setString(1, pais);
+
+                resultSet = ps.executeQuery();
+
+                while (resultSet.next()) {
+                    System.out.println(
+                            resultSet.getString(1) + "\t" + resultSet.getString(2) + "\t" + resultSet.getInt(3));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_5c() {
+        String query = "SELECT pais, estado FROM naves WHERE estado IS NULL";
+        // SELECT pais, estado FROM naves WHERE estado IS NULL
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet resultSet;
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                resultSet = ps.executeQuery();
+
+                while (resultSet.next()) {
+                    System.out.println(resultSet.getString(1) + "\t" + resultSet.getString(2));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej6_5d() {
+        String query = "SELECT nombre, volumenUtil FROM naves ORDER BY volumenUtil DESC LIMIT 1 OFFSET 1";
+        String query2 = "SELECT nombre, volumenUtil FROM naves ORDER BY volumenUtil DESC LIMIT 1 OFFSET 2";
+        // SELECT nombre, MAX(volumenUtil) FROM naves LIMIT 1;
+        try (Statement statement = this.conexion.createStatement()) {
+            if (this.ps == null) {
+                this.ps = this.conexion.prepareStatement(query);
+
+                ResultSet resultSet = statement.executeQuery(query);
+                ResultSet resultSet2 = statement.executeQuery(query2);
+                while (resultSet.next()) {
+                    System.out.println(resultSet.getString(1) + "\t" + resultSet.getDouble(2));
+                }
+                while (resultSet2.next()) {
+                    System.out.println(resultSet2.getString(1) + "\t" + resultSet2.getDouble(2));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej7() {
+        String query = "CALL paises";
+
+        try (CallableStatement cs = this.conexion.prepareCall(query)) {
+            ResultSet resultSet = cs.executeQuery();
+
             while (resultSet.next()) {
-                System.out.println(resultSet.getString(nombre));
+                System.out.println(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej8a() {
+        ResultSet resultSet;
+        DatabaseMetaData metadata;
+
+        try {
+            metadata = conexion.getMetaData();
+            resultSet = metadata.getCatalogs();
+
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString(1));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej8b(String database) {
+        ResultSet resultSet;
+        DatabaseMetaData metadata;
+
+        try {
+            metadata = conexion.getMetaData();
+            resultSet = metadata.getTables(database, null, null, null);
+
+            while (resultSet.next()) {
+                System.out.println(
+                        String.format("%s %s", resultSet.getString("TABLE_NAME"), resultSet.getString("TABLE_TYPE")));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej8c(String database) {
+        ResultSet tablas, columnas;
+        DatabaseMetaData metadata;
+
+        try {
+            metadata = conexion.getMetaData();
+            tablas = metadata.getTables(database, null, null, null);
+            columnas = metadata.getTables(database, null, tablas.getString("TABLE_NAME"), null);
+
+            while (columnas.next()) {
+                System.out.println(String.format("%s %s %d", columnas.getString("COLUMN_NAME"), columnas.getString("TYPE_NAME"), columnas.getString("IS_NULLABLE")));
             }
         } catch (SQLException e) {
             System.out.println("Error " + e.getLocalizedMessage());
@@ -194,10 +419,22 @@ public class JDBC_ejers {
         }
 
         jdbc.abreConexion("add", "localhost", "root", "");
-        //jdbc.ej1("pais", "Japón");
-        //jdbc.ej4("Nuegbrdtyue2332", "Nuevthrs3244", "Nuevohcnte234", "NuENTO23423");
-        //jdbc.ej5a("USA");
-        jdbc.ej5d();
+        // jdbc.ej1("pais", "Japón");
+        // jdbc.ej3(8, "DAERFSHON", "Neuiv pais", "sespacidsdkf");
+        // jdbc.ej4("Nuegbrdtyue2332", "Nuevthrs3244", "Nuevohcnte234", "NuENTO23423");
+        // jdbc.ej5b("USA");
+        // jdbc.ej5c();
+        // jdbc.ej6_1b("pais", "usa");
+        // jdbc.ej6_3("FunciOnoooo", "Nh6tyh4whs", "st6yht6dkf", 6);
+        // jdbc.ej6_4("Nuegbrdtyue2332", "Nuevthrs3244", "Nuevohcnte234",
+        // "NuENTO23423");
+        // jdbc.ej6_5a("USA");
+        // jdbc.ej6_5b("USA");
+        // jdbc.ej6_5d();
+        // jdbc.ej7();
+        // jdbc.ej8a();
+        // jdbc.ej8b("add");
+        jdbc.ej8c("add");
         jdbc.cierraConexion();
     }
 }
