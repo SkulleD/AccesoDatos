@@ -392,17 +392,86 @@ public class JDBC_ejers {
         }
     }
 
-    public void ej8c(String database) {
+    public void ej8c(String database, String tabla) {
         ResultSet tablas, columnas;
         DatabaseMetaData metadata;
 
         try {
             metadata = conexion.getMetaData();
-            tablas = metadata.getTables(database, null, null, null);
-            columnas = metadata.getTables(database, null, tablas.getString("TABLE_NAME"), null);
+            tablas = metadata.getTables(database, null, tabla, null);
 
-            while (columnas.next()) {
-                System.out.println(String.format("%s %s %d", columnas.getString("COLUMN_NAME"), columnas.getString("TYPE_NAME"), columnas.getString("IS_NULLABLE")));
+            while (tablas.next()) {
+                System.out.println(
+                        String.format("%s %s", tablas.getString("TABLE_NAME"), tablas.getString("TABLE_TYPE")));
+                columnas = metadata.getColumns(database, null, tabla, null); // Se puede tabla o
+                                                                             // tablas.getString("TABLE_NAME")
+
+                while (columnas.next()) {
+                    System.out.println(String.format("%s %s %s", columnas.getString("COLUMN_NAME"),
+                            columnas.getString("TYPE_NAME"), columnas.getString("IS_NULLABLE")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej8d(String database, String tabla) {
+        ResultSet tablas, columnas, clavesPrimarias;
+        DatabaseMetaData metadata;
+
+        try {
+            metadata = conexion.getMetaData();
+            tablas = metadata.getTables(database, null, tabla, null);
+
+            while (tablas.next()) {
+                System.out.println(
+                        String.format("%s %s", tablas.getString("TABLE_NAME"), tablas.getString("TABLE_TYPE")));
+                columnas = metadata.getColumns(database, null, tablas.getString("TABLE_NAME"), null); // Se puede tabla
+                                                                                                      // o
+                                                                                                      // tablas.getString("TABLE_NAME")
+                clavesPrimarias = metadata.getPrimaryKeys(database, null, tabla);
+
+                System.out.println("---");
+                while (clavesPrimarias.next()) {
+                    System.out.println(String.format("%s %s", clavesPrimarias.getString("TABLE_NAME"),
+                            clavesPrimarias.getString("COLUMN_NAME")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej9a() {
+        String query = "SELECT * FROM naves";
+        // SELECT * FROM naves;
+
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet filas = statement.executeQuery(query);
+            ResultSetMetaData resMetaData = filas.getMetaData();
+
+            System.out.println("Nombre\t\t\tAlias");
+            for (int i = 1; i <= resMetaData.getColumnCount(); i++) {
+                System.out.println(
+                        String.format("%s\t\t\t%s", resMetaData.getColumnName(i), resMetaData.getColumnLabel(i)));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error " + e.getLocalizedMessage());
+        }
+    }
+
+    public void ej9b() {
+        String query = "SELECT * FROM naves";
+        // SELECT * FROM naves;
+
+        try (Statement statement = this.conexion.createStatement()) {
+            ResultSet filas = statement.executeQuery(query);
+            ResultSetMetaData resMetaData = filas.getMetaData();
+
+            System.out.println("Tipos de Datos");
+            for (int i = 1; i <= resMetaData.getColumnCount(); i++) {
+                System.out.println(String.format("%d\t%s", i, resMetaData.getColumnTypeName(i)));
             }
         } catch (SQLException e) {
             System.out.println("Error " + e.getLocalizedMessage());
@@ -421,7 +490,8 @@ public class JDBC_ejers {
         jdbc.abreConexion("add", "localhost", "root", "");
         // jdbc.ej1("pais", "Japón");
         // jdbc.ej3(8, "DAERFSHON", "Neuiv pais", "sespacidsdkf");
-        // jdbc.ej4("Nuegbrdtyue2332", "Nuevthrs3244", "Nuevohcnte234", "NuENTO23423");
+        // jdbc.ej4("Nuegbrdtyue2332", "Nuevthrs3244", "Nuevohcnte234",
+        // "NrtthNTO23423");
         // jdbc.ej5b("USA");
         // jdbc.ej5c();
         // jdbc.ej6_1b("pais", "usa");
@@ -434,7 +504,10 @@ public class JDBC_ejers {
         // jdbc.ej7();
         // jdbc.ej8a();
         // jdbc.ej8b("add");
-        jdbc.ej8c("add");
+        // jdbc.ej8c("add", "naves");
+        // jdbc.ej8d("add", "notas");
+        // jdbc.ej9a();
+        // jdbc.ej9b();
         jdbc.cierraConexion();
     }
 }
