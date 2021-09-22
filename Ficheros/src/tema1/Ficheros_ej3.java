@@ -31,7 +31,6 @@ public class Ficheros_ej3 {
 					cont++;
 				}
 			}
-			
 			System.out.printf("\n\nLa letra '%c' aparece %d veces", letra, cont );
 		}
 	}
