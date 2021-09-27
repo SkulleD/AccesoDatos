@@ -2,18 +2,18 @@ package tema1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Ficheros_ej5 {
-	String ruta = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Texto5.txt";
-	File archivo = new File(ruta);
-	String cadena = "velit esse cillum";
-
 	public static void main(String[] args) {
 		Ficheros_ej5 ej5 = new Ficheros_ej5();
-		try {
-			ej5.leerFichero(ej5.cadena);
+		String ruta = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Texto5.txt";
+		File archivo = new File(ruta);
+		String cadena = "pesado";
+		
+		try {	
+			ej5.leerFichero(archivo, cadena);
 		} catch (FileNotFoundException e) {
 			System.out.println("ARCHIVO NO ENCONTRADO");
 		} catch (IOException e) {
@@ -21,32 +21,24 @@ public class Ficheros_ej5 {
 		}
 	}
 
-	public void leerFichero(String cadena) throws FileNotFoundException, IOException {
-		File[] lista = archivo.listFiles();
-
-		int i = 0;
+	public void leerFichero(File fichero, String cadena) throws FileNotFoundException, IOException {
 		int lineaCadena = 0;
-		boolean encontrar = false;
+		String linea = "";
+		boolean encontrado = false;
 
-		try (FileReader reader = new FileReader(ruta)) {
-			while ((i = reader.read()) != -1) {
-				System.out.print((char) i);
+		try (Scanner sc = new Scanner(fichero)) {
+			while (sc.hasNextLine()) {
+				linea = sc.nextLine();
+				lineaCadena++;
 				
-				//if () {
-					//lineaCadena++;
-				//}
+				if (linea.contains(cadena)) {
+					encontrado = true;
+					System.out.printf("\n\nLa cadena \"%s\" aparece en la línea %d.", cadena, lineaCadena);
+				}
 			}
 		}
 		
-		if (ruta.contains(cadena)) {
-			encontrar = true;
-		} else {
-			encontrar = false;
-		}
-		
-		if (encontrar) {
-			System.out.printf("\n\nLa cadena \"%s\" aparece en la línea %d.", cadena, lineaCadena);
-		} else {
+		if (encontrado = false) {
 			System.out.println("\n\nEl archivo no contiene esa cadena.");
 		}
 	}

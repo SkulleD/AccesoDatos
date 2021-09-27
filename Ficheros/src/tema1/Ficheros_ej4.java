@@ -26,24 +26,23 @@ public class Ficheros_ej4 {
 		HashMap<Character, Integer> hash = new HashMap<>();
 		
 		try (FileReader reader = new FileReader(ruta)) {
-			int i = 0;
-			char chi = (char) i;
+			int i;
 			int cont = 0;
 			
 			while ((i = reader.read()) != -1) {
-				System.out.print((char) i);
-				
-				if (hash.containsKey((char) i)) {
-					hash.put((char) i, cont+1);
-					hash.put((char) i, hash.get(((char) i) + 1));
-				} else {
-					hash.put((char) i, 1);
+				if (hash.containsKey((char)i)) {
+					hash.put((char)i, hash.get((char)i + 1));
+					cont++;
+				}
+				else {
+					hash.put((char)i, 1);
 				}
 			}
 			
-			for (Map.Entry entry : hash.entrySet()) {
-				System.out.println(entry.getKey() + " -> " + entry.getValue());
-			}
+			System.out.printf("Tamaño: %d", hash.size());
+			System.out.println(hash.get("a"));
+			System.out.println(hash.entrySet());
+			System.out.println(cont);
 		}
 	}
 }
