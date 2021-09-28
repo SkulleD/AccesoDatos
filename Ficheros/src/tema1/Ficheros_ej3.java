@@ -1,6 +1,5 @@
 package tema1;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -23,7 +22,7 @@ public class Ficheros_ej3 {
 		try (FileReader fileIn = new FileReader(ruta)) {
 			int i ;
 			int cont = 0;
-			char letra = 'a';
+			char letra = 'e';
 			while ((i = fileIn.read()) != -1) {
 				System.out.print((char) i);
 				

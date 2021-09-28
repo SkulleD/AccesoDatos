@@ -33,13 +33,13 @@ public class Ficheros_ej5 {
 				
 				if (linea.contains(cadena)) {
 					encontrado = true;
-					System.out.printf("\n\nLa cadena \"%s\" aparece en la línea %d.", cadena, lineaCadena);
+					System.out.printf("La cadena \"%s\" aparece en la línea %d.\n", cadena, lineaCadena);
 				}
 			}
 		}
 		
 		if (encontrado = false) {
-			System.out.println("\n\nEl archivo no contiene esa cadena.");
+			System.out.println("El archivo no contiene esa cadena.");
 		}
 	}
 }
