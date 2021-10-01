@@ -5,12 +5,12 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class Ficheros_ej3 {
-	String ruta = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\bin\\tema1\\ficherito.txt";
-
 	public static void main (String[] args) {
 		Ficheros_ej3 ficheros = new Ficheros_ej3();
+		String ruta = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\bin\\tema1\\ficherito.txt";
+		
 		try {
-			ficheros.leerFichero();
+			ficheros.leerFichero(ruta);
 		} catch (FileNotFoundException e) {
 			System.out.println("ARCHIVO NO ENCONTRADO");
 		} catch (IOException e) {
@@ -18,7 +18,7 @@ public class Ficheros_ej3 {
 		}
 	}
 	
-	public void leerFichero() throws FileNotFoundException, IOException {
+	public void leerFichero(String ruta) throws FileNotFoundException, IOException {
 		try (FileReader fileIn = new FileReader(ruta)) {
 			int i ;
 			int cont = 0;

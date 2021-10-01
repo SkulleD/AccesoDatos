@@ -34,7 +34,7 @@ public class Ficheros_ej4 {
 			
 			while ((i = reader.read()) != -1) {
 				if (hash.containsKey((char)i)) {
-					hash.put((char)i, hash.get((char)i + 1));
+					hash.put((char)i, hash.get((char)i) + 1);
 
 				}
 				else {
@@ -47,10 +47,9 @@ public class Ficheros_ej4 {
 				}
 			}
 			
-			System.out.printf("Tamaño: %d", hash.size());
-			System.out.println(hash.get("a"));
+			System.out.printf("Tamaño: %d\n", hash.size());
 			System.out.println(hash.entrySet());
-			System.out.printf("\nEl caracter más común es %c", letra);
+			System.out.printf("\nEl caracter más común es \"%c\"", letra);
 		}
 	}
 }
