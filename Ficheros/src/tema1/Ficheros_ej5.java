@@ -38,7 +38,7 @@ public class Ficheros_ej5 {
 			}
 		}
 		
-		if (encontrado = false) {
+		if (!encontrado) {
 			System.out.println("El archivo no contiene esa cadena.");
 		}
 	}

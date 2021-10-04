@@ -14,7 +14,7 @@ public class Ficheros_ej4 {
 		Ficheros_ej4 ej4 = new Ficheros_ej4();
 		String ruta = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\bin\\tema1\\ficherito.txt";
 		File file = new File(ruta);
-		
+
 		try {
 			ej4.leerFichero(file, ruta);
 		} catch (FileNotFoundException e) {
@@ -29,7 +29,7 @@ public class Ficheros_ej4 {
 		
 		try (FileReader reader = new FileReader(ruta)) {
 			int i;
-			int comp = 0;
+			int aux = 0;
 			char letra = ' ';
 			
 			while ((i = reader.read()) != -1) {
@@ -41,9 +41,11 @@ public class Ficheros_ej4 {
 					hash.put((char)i, 1);
 				}
 				
-				if (comp < hash.get((char)i)) {
-					comp = hash.get((char)i);
-					letra = (char)i;
+				for (Entry<Character, Integer> entry : hash.entrySet()) {
+					if (aux <= entry.getValue()) {
+						aux = entry.getValue();
+						letra = entry.getKey();
+					}
 				}
 			}
 			
