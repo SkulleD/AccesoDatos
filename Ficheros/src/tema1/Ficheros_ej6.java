@@ -8,20 +8,38 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 public class Ficheros_ej6 {
-	public void uneFicheros(String rutaFinal) { //File[] files
-		File[] files;
-		int cantidadArray = 0;
+	public void uneFicheros(String rutaFinal, String archivoFinal) throws IOException, FileNotFoundException {
+		File file = new File(rutaFinal);
+		File fileFinal = new File(archivoFinal);
+		char charUnir = ' ';
 		
-		for (File f : files) {
-			cantidadArray++;
+		if (file.exists()) {
+			File[] archivos = file.listFiles();
+			for (File texto : archivos) {
+				if (texto.isFile()) {
+					try (FileReader reader = new FileReader(texto)) {
+						int i;
+						while ((i = reader.read()) != -1) {
+							charUnir = (char) i;
+							
+							try (PrintWriter writer = new PrintWriter(new FileWriter(fileFinal, true))) {
+								writer.print(charUnir);
+								
+							} catch (FileNotFoundException e) {
+								
+							} catch (IOException e) {
+								
+							}
+						}
+					} catch (FileNotFoundException e) {
+						
+					} catch (IOException e) {
+						
+					}
+				}
+			}
+			System.out.println("\nUnido todo en -----> " + fileFinal.getAbsolutePath());
 		}
-		
-//		try {
-//			PrintWriter pw = new PrintWriter(files[0].getParent() + "/" + destino);
-//			pw.close();
-//		} catch (FileNotFoundException e) {
-//			
-//		}
 	}
 	
 	public void leerFichero(File fichero, int n, String rutaEscribir) throws IOException, FileNotFoundException {
@@ -38,7 +56,6 @@ public class Ficheros_ej6 {
 				file = new File(rutaEscribir + numArchivo +".txt");
 				ej6.escribeTrozos(file, aEscribir);
 				numArchivo++;
-				//System.out.println(new String(buffer, 0, i));
 			}
 		} catch (FileNotFoundException e) {
 			
@@ -60,14 +77,13 @@ public class Ficheros_ej6 {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		String rutabase = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio6\\TEXTOBASE.txt";
 		String rutaEscribir = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio6\\Archivos\\archivo";
-		String rutaUnirFicheros = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio6";
+		String rutaUnirFicheros = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio6\\Archivos";
+		String archivoFinal = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio6\\ArchivoFinal.txt";
 		File file = new File(rutabase);
 		Ficheros_ej6 ej6 = new Ficheros_ej6();
-		//File file = new File("");
-		File[] files = new File[] {new File("ruta 1"), new File("ruta 2")};
 		
 		ej6.leerFichero(file, 5, rutaEscribir);
-		ej6.uneFicheros(rutaUnirFicheros);
+		ej6.uneFicheros(rutaUnirFicheros, archivoFinal);
 
 	}
 }
