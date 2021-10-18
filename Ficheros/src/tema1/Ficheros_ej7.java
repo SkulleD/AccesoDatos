@@ -11,82 +11,85 @@ import java.util.Collections;
 import java.util.Scanner;
 
 public class Ficheros_ej7 {
+	File file = new File("C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio7\\Texto_ej7.txt");
+	File fileNew = new File("C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio7\\Nuevotxt.txt");
 	int numLineas = 0;
 	int numPalabras = 0;
-	boolean sensibleCaso = false;
+	public boolean sensibleCaso = false;
 	ArrayList<String> lista = new ArrayList<>();
-
-	public void menu() {
-		int menu = 0;
-
-		switch (menu) {
-
-		}
-	}
 	
 	public void contador(File file) throws FileNotFoundException {
-		File file2 = new File("C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio7\\Nuevotxt.txt");
-		String palabra = "";
-		
+		String linea = "";
+
 		try (Scanner sc = new Scanner(file)) {
 			while (sc.hasNextLine()) {
-				sc.nextLine();
+				linea = sc.nextLine();
+				addToArray(linea);
 				numLineas++;
 			}
-		} catch (FileNotFoundException e) {	
+		} catch (FileNotFoundException e) {
 		}
 
 		try (Scanner sc2 = new Scanner(file)) {
 			while (sc2.hasNext()) {
-				palabra = sc2.next();
-				addToArray(palabra);
+				sc2.next();
 				numPalabras++;
 			}
 		} catch (FileNotFoundException e) {
-			
+
 		}
 
 		System.out.println("Líneas: " + numLineas + "\nPalabras: " + numPalabras);
 	}
-	
+
 	public void ordenAscendente() {
-		Collections.sort(lista);
-		
-		if (!sensibleCaso()) {
-			for (String palabra : lista) {
-				System.out.println(palabra);
-			}
+		if (sensibleCaso) {
+			Collections.sort(lista);
 		} else {
-			
+			Collections.sort(lista, String.CASE_INSENSITIVE_ORDER);
 		}
 
-	}
-	
-	public void ordenDescendente() {
-		Collections.sort(lista, Collections.reverseOrder());
-		
-		if (!sensibleCaso()) {
-			for (String palabra : lista) {
-				System.out.println(palabra);
-			}
-		} else {
-			
+		for (String linea : lista) {
+			escribir(linea);
+			System.out.println(linea);
 		}
 	}
-	
-	public boolean sensibleCaso() {
-		return sensibleCaso;
+
+	public void ordenDescendente() {
+		if (sensibleCaso) {
+			Collections.sort(lista, Collections.reverseOrder());
+		} else {
+			Collections.sort(lista, String.CASE_INSENSITIVE_ORDER);
+			Collections.reverse(lista);
+		}
+
+		for (String linea : lista) {
+			escribir(linea);
+			System.out.println(linea);
+		}
+	}
+
+	public void addToArray(String linea) {
+		lista.add(linea);
 	}
 	
-	public void addToArray(String palabra) {
-		lista.add(palabra);
+	public void escribir(String linea) {	
+		try (PrintWriter writer = new PrintWriter(new FileWriter(fileNew, true))) {
+			writer.println(linea);
+			
+		} catch (FileNotFoundException e) {
+			
+		} catch (IOException e1) {
+
+		}
 	}
 
 	public static void main(String[] args) throws FileNotFoundException {
 		Ficheros_ej7 ej7 = new Ficheros_ej7();
-		File file = new File("C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio7\\Texto_ej7.txt");
 
-		ej7.contador(file);
-		ej7.ordenDescendente();
+		ej7.contador(ej7.file);
+		ej7.sensibleCaso = false;
+		ej7.ordenAscendente();
+		System.out.printf("Nuevo archivo txt creado en %s", ej7.fileNew.toString());
 	}
 }
