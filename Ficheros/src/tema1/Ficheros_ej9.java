@@ -15,9 +15,10 @@ public class Ficheros_ej9 {
 	String cadena = "";
 	static Alumno alumno = new Alumno();
 	boolean existe = false;
+	static Ficheros_ej9 ej9 = new Ficheros_ej9();
 
 	public void nuevoAlumno(File file, Alumno alumno) throws IOException {
-		if (siExiste(alumno.getCodigo())) {
+		if (!siExiste(alumno.getCodigo())) {
 			try (DataOutputStream output = new DataOutputStream(new FileOutputStream(file, true))) {
 				output.writeInt(alumno.getCodigo());
 				output.writeUTF(alumno.getNombre());
@@ -32,7 +33,7 @@ public class Ficheros_ej9 {
 		}
 	}
 
-	public void consultarAlumnos(File file) {
+	public void consultarAlumnos(File file, boolean leerSiNo) {
 		try (DataInputStream input = new DataInputStream(new FileInputStream(file))) {
 			int codigo;
 			String nombre;
@@ -42,22 +43,29 @@ public class Ficheros_ej9 {
 				codigo = input.readInt();
 				nombre = input.readUTF();
 				altura = input.readFloat();
-				System.out.printf("Código: %d\nNombre: %s\nAltura: %.2f", codigo, nombre, altura);
-				System.out.println("\n");
+				
+				if (leerSiNo) {
+					System.out.printf("Código: %d\nNombre: %s\nAltura: %.2f", codigo, nombre, altura);
+					System.out.println("\n");
+				}
 			}
 		} catch (FileNotFoundException e) {
 
 		} catch (IOException e) {
-
+			
 		}
 	}
 
-	public void modificarAlumnos() {
-
+	public boolean modificarAlumnos(File file, int codigo) {
+		//ej9.consultarAlumnos(file, false);
+		if (alumno.getCodigo() == codigo) {
+			
+		}
+		return false;
 	}
 
-	public void borrarAlumnos() {
-
+	public void borrarAlumnos(File file) {
+		
 	}
 	
 	public boolean siExiste(int codigo) {
@@ -73,7 +81,7 @@ public class Ficheros_ej9 {
 	public static void main(String[] args) throws IOException {
 		File fileAlumnos = new File("C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio9\\alumnos.dat");
 		File fileAux = new File("C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio9\\auxiliar.dat");
-		Ficheros_ej9 ej9 = new Ficheros_ej9();
+
 
 		for (int i = 1; i <= 5; i++) {
 			alumno.setCodigo(i);
@@ -82,7 +90,7 @@ public class Ficheros_ej9 {
 			ej9.nuevoAlumno(fileAlumnos, alumno);
 			
 		}
-		ej9.consultarAlumnos(fileAlumnos);
-		
+		ej9.consultarAlumnos(fileAlumnos, false);
+		ej9.modificarAlumnos(fileAux, 2);
 	}
 }

@@ -17,13 +17,14 @@ public class Ficheros_ej8 {
 
 		} catch (FileNotFoundException e) {
 
+		} catch (IOException e) {
+			
 		}
 
 		System.out.println("Tarea finalizada");
 	}
 
-	public void escribeConBuffer(File fileLeer, File fileEscribir, byte[] buffer)
-			throws FileNotFoundException, IOException {
+	public void escribeConBuffer(File fileLeer, File fileEscribir, byte[] buffer) throws FileNotFoundException, IOException {
 		try (FileInputStream input = new FileInputStream(fileLeer);
 				FileOutputStream output = new FileOutputStream(fileEscribir)) {
 			int c = 0;
@@ -34,6 +35,8 @@ public class Ficheros_ej8 {
 
 		} catch (FileNotFoundException e) {
 
+		} catch (IOException e) {
+			
 		}
 		
 		System.out.println("Tarea finalizada");

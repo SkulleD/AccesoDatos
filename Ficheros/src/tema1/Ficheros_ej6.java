@@ -45,22 +45,27 @@ public class Ficheros_ej6 {
 	public void leerFichero(File fichero, int n, String rutaEscribir) throws IOException, FileNotFoundException {
 		Ficheros_ej6 ej6 = new Ficheros_ej6();
 		File file;
-		try (FileReader filereader = new FileReader(fichero)) {
-			char buffer[] = new char[n];
-			int i;
-			String aEscribir = "";
-			int numArchivo = 0;
-			
-			while ((i = filereader.read(buffer)) != -1) {
-				aEscribir = String.valueOf(buffer);
-				file = new File(rutaEscribir + numArchivo +".txt");
-				ej6.escribeTrozos(file, aEscribir);
-				numArchivo++;
+		
+		if (n > 0) {
+			try (FileReader filereader = new FileReader(fichero)) {
+				char buffer[] = new char[n];
+				int i;
+				String aEscribir = "";
+				int numArchivo = 0;
+				
+				while ((i = filereader.read(buffer)) != -1) {
+					aEscribir = String.valueOf(buffer);
+					file = new File(rutaEscribir + numArchivo +".txt");
+					ej6.escribeTrozos(file, aEscribir);
+					numArchivo++;
+				}
+			} catch (FileNotFoundException e) {
+				
+			} catch (IOException e) {
+				
 			}
-		} catch (FileNotFoundException e) {
-			
-		} catch (IOException e) {
-			
+		} else {
+			System.out.println("El buffer no puede ser menor o igual que 0");
 		}
 	}
 	
@@ -74,6 +79,8 @@ public class Ficheros_ej6 {
 		}
 	}
 	
+	
+	
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		String rutabase = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio6\\TEXTOBASE.txt";
 		String rutaEscribir = "C:\\Users\\AlvaroVila\\eclipse-workspace\\Ficheros\\Ejercicio6\\Archivos\\archivo";
@@ -82,7 +89,7 @@ public class Ficheros_ej6 {
 		File file = new File(rutabase);
 		Ficheros_ej6 ej6 = new Ficheros_ej6();
 		
-		ej6.leerFichero(file, 5, rutaEscribir);
+		//ej6.leerFichero(file, 5, rutaEscribir);
 		ej6.uneFicheros(rutaUnirFicheros, archivoFinal);
 
 	}

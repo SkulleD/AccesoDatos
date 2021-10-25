@@ -20,6 +20,9 @@ public class Ficheros_ej7 {
 	
 	public void contador(File file) throws FileNotFoundException {
 		String linea = "";
+		lista.clear();
+		numLineas = 0;
+		numPalabras = 0;
 
 		try (Scanner sc = new Scanner(file)) {
 			while (sc.hasNextLine()) {
@@ -87,6 +90,7 @@ public class Ficheros_ej7 {
 	public static void main(String[] args) throws FileNotFoundException {
 		Ficheros_ej7 ej7 = new Ficheros_ej7();
 
+		ej7.contador(ej7.file);
 		ej7.contador(ej7.file);
 		ej7.sensibleCaso = false;
 		ej7.ordenAscendente();
