@@ -11,6 +11,7 @@ public class XML_ej1 {
 			factoria.setIgnoringComments(true);
 			DocumentBuilder builder = factoria.newDocumentBuilder();
 			doc = builder.parse(ruta);
+			System.out.println("-!ÁRBOL CREADO!-");
 		} catch (Exception e) {
 			System.out.println("Error generando el árbol DOM: " + e.getMessage());
 		}
@@ -19,6 +20,7 @@ public class XML_ej1 {
 
 	public static void main(String[] args) {
 		XML_ej1 dom = new XML_ej1();
-		Document doc1 = dom.creaArbol("");
+		String ruta = "file:///C:\\Users\\AlvaroVila\\Desktop\\CLASE\\AD - Acceso a Datos\\Práctica\\peliculas.xml";
+		Document documento = dom.creaArbol(ruta);
 	}
 }
