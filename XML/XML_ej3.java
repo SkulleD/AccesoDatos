@@ -1,4 +1,3 @@
-import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.w3c.dom.Document;
@@ -8,30 +7,25 @@ import org.w3c.dom.NodeList;
 
 public class XML_ej3 {
 	public void getPeliculas(Document doc) {
-		NodeList peliculas = doc.getElementsByTagName("pelicula");
-
-		Node directorNodo, nombre, apellido;
-
-		for (int i = 0; i < peliculas.getLength(); i++) {
-			NodeList titulo = doc.getElementsByTagName("titulo");
-			NodeList director = doc.getElementsByTagName("director");
-			NodeList nombres = doc.getElementsByTagName("nombre");
-			NodeList apellidos = doc.getElementsByTagName("apellido");
+		NodeList titulos = doc.getElementsByTagName("titulo");
+		NodeList directores;
+		NodeList nombres;
+		NodeList apellidos;
+		Element padre;
+		
+		for (int i = 0; i < titulos.getLength(); i++) {
+			padre = (Element)titulos.item(i).getParentNode();
+			System.out.println("-----------------");
+			System.out.printf("Título: %s \n", titulos.item(i).getFirstChild().getNodeValue());
 			
-			for (int j = 0; j < director.getLength() - 1; j++) {
-				System.out.printf("Película: %s", titulo.item(j).getFirstChild().getNodeValue());
-				System.out.printf("\nDirector: %s", nombres.item(j).getFirstChild().getNodeValue() + " ");
-				System.out.println(apellidos.item(j).getFirstChild().getNodeValue());
-				System.out.println("------------------");
+			directores = padre.getElementsByTagName("director");
+			nombres = padre.getElementsByTagName("nombre");
+			apellidos = padre.getElementsByTagName("apellido");
+			
+			for (int j = 0; j < directores.getLength(); j++) {
+				System.out.printf("Director/a: %s %s\n", nombres.item(j).getFirstChild().getNodeValue(), apellidos.item(j).getFirstChild().getNodeValue());
 			}
 		}
-		
-//		for (int i = 0 ; i < director.getLength(); i++) {
-//			nombre = director.item(i).getFirstChild();
-//			
-//			if (nombre.getNodeType() == Node.ELEMENT_NODE) {
-//				System.out.println(nombre.getFirstChild().getNodeValue());
-//			}
 	}
 	
 	public static void main(String[] args) {
