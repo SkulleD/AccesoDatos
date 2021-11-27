@@ -21,6 +21,7 @@ public class JSON_ej1 {
 	
 	public static void main(String[] args) {
 		JSON_ej1 ej1 = new JSON_ej1();
-		System.out.println(ej1.devuelveTiempo("vigo").getString("description"));
+		String ciudad = "vigo";
+		System.out.println(ej1.devuelveTiempo(ciudad).getString("description"));
 	}
 }
