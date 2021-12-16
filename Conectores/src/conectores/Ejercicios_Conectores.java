@@ -35,6 +35,7 @@ public class Ejercicios_Conectores {
 
 	public void ejercicio1(String cadena) throws SQLException { // Consultar alumnos con determinada cadena de caracteres en nombre
 		String query = "SELECT * FROM alumnos WHERE nombre LIKE \"%" + cadena + "%\"";
+	
 		abrirConexion("add", "localhost", "root", "");
 		Statement stmt = this.conexion.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
@@ -51,27 +52,54 @@ public class Ejercicios_Conectores {
 		cerrarConexion();
 	}
 	
-	public void ejercicio2(int IDalumno, String nombre, String apellido, int altura, int aula, int CODasignatura, String nombreAsignatura) throws SQLException { // Dar de alta alumnos y asignaturas
-		String query = "INSERT INTO alumnos VALUES (" + IDalumno + ", \"" + nombre + "\", \"" + apellido + "\", " + altura + ", " + aula + ");"
-				+ "\nINSERT INTO asignaturas VALUES (" + CODasignatura + ", \"" + nombreAsignatura + "\")";
-		System.out.println(query);
+	public void ejercicio2(int IDalumno, String nombre, String apellido, int altura, int aula, int CODasignatura, String nombreAsignatura) throws SQLException { // Dar de alta un alumno y una asignatura
+		String query = "INSERT INTO alumnos VALUES (" + IDalumno + ", \"" + nombre + "\", \"" + apellido + "\", " + altura + ", " + aula + ");";
+		String query2 = "\nINSERT INTO asignaturas VALUES (" + CODasignatura + ", \"" + nombreAsignatura + "\");";
+		System.out.print(query + query2 + "\n");
+		
 		abrirConexion("add", "localhost", "root", "");
 		Statement stmt = this.conexion.createStatement();
 
-		int insertAlumnos = stmt.executeUpdate(query);
-		System.out.println("Filas insertadas: " + insertAlumnos);
+		int insert = stmt.executeUpdate(query);
+		int insert2 = stmt.executeUpdate(query2);
+		System.out.println("Filas insertadas: " + (insert + insert2));
 		cerrarConexion();
 	}
 	
-	public void ejercicio3() {
+	public void ejercicio3(String nombreAlumno, String nombreAsig) throws SQLException { // Eliminar un alumno y una asignatura
+		String query = "DELETE FROM alumnos WHERE nombre = '" + nombreAlumno +"';";
+		String query2 = "DELETE FROM asignaturas WHERE nombre = '" + nombreAsig +"';";
+		System.out.print(query + "\n" + query2 + "\n");
 		
+		abrirConexion("add", "localhost", "root", "");
+		Statement stmt = this.conexion.createStatement();
+		
+		int remove = stmt.executeUpdate(query);
+		int remove2 = stmt.executeUpdate(query2);
+		System.out.println("Filas eliminadas: " + (remove + remove2));
+		cerrarConexion();
+	}
+	
+	public void ejercicio4() throws SQLException { // Modificar un alumno y una asignatura
+		String query = "";
+		String query2 = "";
+		System.out.print(query + "\n" + query2 + "\n");
+		
+		abrirConexion("add", "localhost", "root", "");
+		Statement stmt = this.conexion.createStatement();
+		
+		int modify = stmt.executeUpdate(query);
+		int modify2 = stmt.executeUpdate(query2);
+		System.out.println("Filas modificadas: " + (modify + modify2));
+		cerrarConexion();
 	}
 
 	public static void main(String[] args) {
 		 ej = new Ejercicios_Conectores();
 		 
 		try {
-			ej.ejercicio2(11, "Rovaalvaro", "Vila", 182, 20, 11, "nUEVA 2");
+			//ej.ejercicio2(14, "Rovaaytjyyhlvaro", "Byla", 182, 20, 12, "nUEVA 2");
+			//ej.ejercicio3("Frank", "Programacion");
 		} catch (SQLException e) {
 
 		}
