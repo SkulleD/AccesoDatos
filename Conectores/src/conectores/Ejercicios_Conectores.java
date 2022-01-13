@@ -57,14 +57,79 @@ public class Ejercicios_Conectores {
 		abrirConexion("add", "localhost", "root", "");
 		Statement stmt;
 		int insert = -1;
+
 		try {
 			stmt = this.conexion.createStatement();
 			insert = stmt.executeUpdate(query);
 			cerrarConexion();
 		} catch (SQLException e) {
 			e.printStackTrace();
+			cerrarConexion();
 		}
 		return insert;
+	}
+
+	public String imprimoAulas(String query) { // Imprime las aulas que tengan ALUMNOS
+		abrirConexion("add", "localhost", "root", "");
+
+		ResultSet rs;
+		String aulas = "";
+
+		try (Statement stmt = this.conexion.createStatement();) {
+			rs = stmt.executeQuery(query);
+
+			while (rs.next()) {
+				aulas += "\n" + rs.getString("nombreAula");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		cerrarConexion();
+
+		return aulas;
+	}
+
+	public String imprimoAprobados(String query) { // Imprime los alumnos, asignaturas y notas de los alumnos que HAN
+													// APROBADO
+		abrirConexion("add", "localhost", "root", "");
+		Statement stmt;
+		ResultSet rs;
+		String aulas = "";
+
+		try {
+			stmt = this.conexion.createStatement();
+			rs = stmt.executeQuery(query);
+
+			while (rs.next()) {
+				aulas += "\n" + rs.getString(1) + "\t\t" + rs.getString(2) + "\t\t" + rs.getInt(3);
+			}
+			cerrarConexion();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			cerrarConexion();
+		}
+		return aulas;
+	}
+
+	public String imprimoAsignaturas(String query) { // Imprime las asignaturas SIN ALUMNOS
+		abrirConexion("add", "localhost", "root", "");
+		Statement stmt;
+		ResultSet rs;
+		String aulas = "";
+
+		try {
+			stmt = this.conexion.createStatement();
+			rs = stmt.executeQuery(query);
+
+			while (rs.next()) {
+				aulas += "\n" + rs.getString("nombreAula");
+			}
+			cerrarConexion();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			cerrarConexion();
+		}
+		return aulas;
 	}
 
 	public int ejercicio2a(int IDalumno, String nombre, String apellido, int altura, int aula, int CODasignatura,
@@ -92,42 +157,41 @@ public class Ejercicios_Conectores {
 
 	public int ejercicio4a(int IDnombre, String nombre, String apellidos, int altura, int aula, int IDasign,
 			String nombreAsign) throws SQLException { // Modificar un alumno
-		String query = "UPDATE alumnos" + "SET nombre = '" + nombre + "', apellidos = '" + apellidos
-				+ "', altura = " + altura + ", aula = " + aula + " " + "WHERE codigo = " + IDnombre + ";";
+		String query = "UPDATE alumnos" + "SET nombre = '" + nombre + "', apellidos = '" + apellidos + "', altura = "
+				+ altura + ", aula = " + aula + " " + "WHERE codigo = " + IDnombre + ";";
 		return ejecuto(query);
 	}
 
 	public int ejercicio4b(int IDnombre, String nombre, String apellidos, int altura, int aula, int IDasign,
 			String nombreAsign) throws SQLException { // Modificar una asignatura
-		String query = "UPDATE asignaturas" + "SET NOMBRE = '" + nombreAsign + "' " + "WHERE cod = " + IDasign
-				+ ";";
+		String query = "UPDATE asignaturas" + "SET NOMBRE = '" + nombreAsign + "' " + "WHERE cod = " + IDasign + ";";
 		return ejecuto(query);
 	}
 
-	public int ejercicio5a() { // 1: Nombre de aulas con alumnos
-		String query = "SELECT DISTINCT aulas.nombreAula FROM aulas INNER JOIN alumnos ON aulas.numero = alumnos.aula where nombreAula IS NOT NULL";
-		return ejecuto(query);
+	public String ejercicio5a() { // 1: Nombre de aulas con alumnos
+		String query = "SELECT DISTINCT aulas.nombreAula FROM aulas INNER JOIN alumnos ON aulas.numero = alumnos.aula WHERE nombreAula IS NOT NULL";
+		return imprimoAulas(query);
 	}
 
-	public int ejercicio5b() { // 2: Nombres de alumnos, de asignaturas y notas de los que han aprobado alguna
+	public String ejercicio5b() { // 2: Nombres de alumnos, de asignaturas y notas de los que han aprobado alguna
 		String query = "SELECT DISTINCT alumnos.nombre, asignaturas.NOMBRE, notas.NOTA\r\n"
 				+ "FROM alumnos, asignaturas, notas WHERE notas.NOTA >= 5\r\n"
 				+ "AND alumnos.codigo = notas.alumno AND asignaturas.COD = notas.asignatura";
-		return ejecuto(query);
+		return imprimoAprobados(query);
 	}
 
-	public int ejercicio5c() { // 3: Asignaturas sin alumnos
+	public String ejercicio5c() { // 3: Asignaturas sin alumnos
 		String query = "";
-		return ejecuto(query);
+		return imprimoAsignaturas(query);
 	}
 
 	public static void main(String[] args) throws SQLException {
 		ej = new Ejercicios_Conectores();
-		
+
 		// ej.ejercicio1("a");
 		// ej.ejercicio2(14, "Rovaro", "Byla", 182, 20, 12, "nUEVA 2");
 		// ej.ejercicio3(7, 9);
-		//ej.ejercicio4(14, "newNombre", "newApellidos", 179, 20, 12, "NUEVA ASIGN 3");
-		System.out.println(ej.ejercicio5a());
+		// ej.ejercicio4(14, "newNombre", "newApellidos", 179, 20, 12, "NUEVA ASIGN 3");
+		System.out.print(ej.ejercicio5b());
 	}
 }
