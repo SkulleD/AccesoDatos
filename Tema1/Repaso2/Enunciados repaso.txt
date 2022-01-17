@@ -1,0 +1,20 @@
+2)	Ficheros. Crea un método que en un fichero destino unifique, separándolas con un espacio, todas las líneas de un fichero origen en una única línea. 
+
+3)	Ficheros. Necesitamos crear un programa que nos permita crear un catálogo con nuestros libros (tiene que ser inicializado con un mínimo de cinco libros). De los libros se debe almacenar en disco, puesto que no se puede trabajar con colecciones en memoria, los siguientes datos: título, autor y el número de páginas. Crea los métodos necesarios para: 
+a)	Insertar una lista de libros (no es necesario conservar el contenido previo del fichero). 
+b)	Visualizar el contenido del fichero. 
+c)	Volcar el contenido del fichero generado a un fichero de texto. Cada libro debe escribirse en una única línea. 
+
+
+Tenemos el fichero Carreras.xml que representan los resultados de las dos primeras carreras del año 2019 en el mundial de F1. Crea los siguientes métodos para: (2.25 pt) 
+
+4)	DOM. Mostrar el id de cada circuito (circuitId dentro de Circuit). 
+5)	DOM. Mostrar, para cada carrera (Race) el país (country), la longitud (long) y latitud (lat) y el nombre de cada escudería (name dentro de Constructor) participante en las carreras. 
+6)	DOM. Mostrar el nombre del piloto (name dentro de Driver), el nombre del circuito (name dentro de Circuit) y la velocidad media (speed) de los pilotos de los pilotos cuya posición (position) sea par. 
+
+
+Usando el fichero Carreras.json proporcionado realizar los siguientes métodos: 
+
+9)	JSON. Mostrar el id de cada circuito (circuitId dentro de Circuit). 
+10)	JSON. Mostrar, para cada carrera (Race) el país (country), la longitud (long) y latitud (lat) y el nombre de cada escudería (name dentro de Constructor) participante en las carreras. 
+11)	JSON. Muestra para cada piloto su nombre (name dentro de driver), los nombres de los circuitos que ha participado (name dentro de Circuit) y para cada circuito la velocidad media (speed) y los puntos obtenidos en ese circuito (points). 
