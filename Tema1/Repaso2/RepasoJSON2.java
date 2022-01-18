@@ -61,23 +61,88 @@ public class RepasoJSON2 {
 			 */
 		}
 	}
-	
+
 	public static void muestraID(String ruta) {
 		JsonObject raiz = leeJSON(ruta).asJsonObject();
 		JsonObject raceTable = raiz.getJsonObject("RaceTable");
 		JsonArray races = raceTable.getJsonArray("Races");
-		JsonObject circuit = null;
+		JsonObject datosRace;
+		JsonObject circuit;
+
+		for (int i = 0; i < races.size(); i++) {
+			datosRace = races.getJsonObject(i);
+			circuit = datosRace.getJsonObject("Circuit");
+
+			System.out.println("Circuit " + i + ": " + circuit.getString("circuitId"));
+		}
+	}
+
+	public static void muestraInfoRace(String ruta) {
+		JsonObject raiz = leeJSON(ruta).asJsonObject();
+		JsonObject raceTable = raiz.getJsonObject("RaceTable");
+		JsonArray races = raceTable.getJsonArray("Races");
+		JsonObject datosRace;
+		JsonObject circuit;
+		JsonObject location;
+		JsonObject datosTemporales;
+		JsonArray positions;
+		JsonObject constructor;
+
+		for (int i = 0; i < races.size(); i++) {
+			datosRace = races.getJsonObject(i);
+			circuit = datosRace.getJsonObject("Circuit");
+			location = circuit.getJsonObject("Location");
+
+			System.out.printf("Country: %s\nLat: %f\nLong: %f\n\n", location.getString("country"),
+					location.getJsonNumber("lat").doubleValue(), location.getJsonNumber("long").doubleValue());
+		}
 		
 		for (int i = 0; i < races.size(); i++) {
-			circuit = races.getJsonObject(i);
+			datosTemporales = races.getJsonObject(i);
+			positions = datosTemporales.getJsonArray("Positions");
 
-			System.out.println(circuit.getString("circuitId"));
+			for (int j = 0; j < positions.size(); j++) {
+				datosTemporales = positions.getJsonObject(j);
+				constructor = datosTemporales.getJsonObject("Constructor");
+				System.out.println("Escudería " + (j + 1) + ": " + constructor.getString("name"));
+			}
 		}
 	}
 	
-	
+	public static void muestraInfoDriver(String ruta) {
+		JsonObject raiz = leeJSON(ruta).asJsonObject();
+		JsonObject raceTable = raiz.getJsonObject("RaceTable");
+		JsonArray races = raceTable.getJsonArray("Races");
+		JsonObject datos;
+		JsonArray positions;
+		JsonObject driver;
+		JsonObject circuit;
+		JsonObject fastestLap;
+		JsonObject averageSpeed;
+		
+		for (int i = 0; i < races.size(); i++) {
+			datos = races.getJsonObject(i);
+			positions = datos.getJsonArray("Positions");
+			circuit = datos.getJsonObject("Circuit");
+			
+			for (int j = 0; j < positions.size(); j++) {
+				datos = positions.getJsonObject(j);
+				driver = datos.getJsonObject("Driver");
+				fastestLap = datos.getJsonObject("FastestLap");
+				averageSpeed = fastestLap.getJsonObject("AverageSpeed");
+				
+				System.out.println("Driver name: " + driver.getString("name") + 
+						"\nCircuit name: " + circuit.getString("name") +
+						"\nSpeed: " + averageSpeed.getJsonNumber("speed").doubleValue() +
+						"\nPoints: " + datos.getInt("points"));
+			}
+		}
+	}
+
 	public static void main(String[] args) {
 		String ruta = "C:\\Carreras.json";
-		muestraID(ruta);
+		// muestraID(ruta);
+		// muestraInfoRace(ruta);
+		muestraInfoDriver(ruta);
 	}
 }
