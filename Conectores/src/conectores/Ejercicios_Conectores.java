@@ -2,6 +2,7 @@ package conectores;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -61,11 +62,12 @@ public class Ejercicios_Conectores {
 		try {
 			stmt = this.conexion.createStatement();
 			insert = stmt.executeUpdate(query);
-			cerrarConexion();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			cerrarConexion();
+
 		}
+
+		cerrarConexion();
 		return insert;
 	}
 
@@ -84,8 +86,8 @@ public class Ejercicios_Conectores {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		cerrarConexion();
 
+		cerrarConexion();
 		return aulas;
 	}
 
@@ -94,53 +96,56 @@ public class Ejercicios_Conectores {
 		abrirConexion("add", "localhost", "root", "");
 		Statement stmt;
 		ResultSet rs;
-		String aulas = "";
+		String alumnos = "";
 
 		try {
 			stmt = this.conexion.createStatement();
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
-				aulas += "\n" + rs.getString(1) + "\t\t" + rs.getString(2) + "\t\t" + rs.getInt(3);
+				alumnos += "\n" + rs.getString(1) + "\t\t" + rs.getString(2) + "\t\t" + rs.getInt(3);
 			}
-			cerrarConexion();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			cerrarConexion();
 		}
-		return aulas;
+
+		cerrarConexion();
+		return alumnos;
 	}
 
 	public String imprimoAsignaturas(String query) { // Imprime las asignaturas SIN ALUMNOS
 		abrirConexion("add", "localhost", "root", "");
 		Statement stmt;
 		ResultSet rs;
-		String aulas = "";
+		String asignaturas = "";
 
 		try {
 			stmt = this.conexion.createStatement();
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
-				aulas += "\n" + rs.getString("nombreAula");
+				asignaturas += "\n" + rs.getString("nombreAula");
 			}
 			cerrarConexion();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			cerrarConexion();
 		}
-		return aulas;
+		return asignaturas;
 	}
 
-	public int ejercicio2a(int IDalumno, String nombre, String apellido, int altura, int aula, int CODasignatura,
-			String nombreAsignatura) throws SQLException { // Dar de alta un alumno
+	public int ejercicio2a(int IDalumno, String nombre, String apellido, int altura, int aula) throws SQLException { // Dar
+																														// de
+																														// alta
+																														// un
+																														// alumno
 		String query = "INSERT INTO alumnos VALUES (" + IDalumno + ", '" + nombre + "', \"" + apellido + "\", " + altura
 				+ ", " + aula + ");";
 		return ejecuto(query);
 	}
 
-	public int ejercicio2b(int IDalumno, String nombre, String apellido, int altura, int aula, int CODasignatura,
-			String nombreAsignatura) throws SQLException { // Dar de alta una asignatura
+	public int ejercicio2b(int CODasignatura, String nombreAsignatura) throws SQLException { // Dar de alta una
+																								// asignatura
 		String query = "INSERT INTO asignaturas VALUES (" + CODasignatura + ", \"" + nombreAsignatura + "\");";
 		return ejecuto(query);
 	}
@@ -155,15 +160,15 @@ public class Ejercicios_Conectores {
 		return ejecuto(query);
 	}
 
-	public int ejercicio4a(int IDnombre, String nombre, String apellidos, int altura, int aula, int IDasign,
-			String nombreAsign) throws SQLException { // Modificar un alumno
+	public int ejercicio4a(int IDnombre, String nombre, String apellidos, int altura, int aula) throws SQLException { // Modificar
+																														// un
+																														// alumno
 		String query = "UPDATE alumnos" + "SET nombre = '" + nombre + "', apellidos = '" + apellidos + "', altura = "
 				+ altura + ", aula = " + aula + " " + "WHERE codigo = " + IDnombre + ";";
 		return ejecuto(query);
 	}
 
-	public int ejercicio4b(int IDnombre, String nombre, String apellidos, int altura, int aula, int IDasign,
-			String nombreAsign) throws SQLException { // Modificar una asignatura
+	public int ejercicio4b(int IDasign, String nombreAsign) throws SQLException { // Modificar una asignatura
 		String query = "UPDATE asignaturas" + "SET NOMBRE = '" + nombreAsign + "' " + "WHERE cod = " + IDasign + ";";
 		return ejecuto(query);
 	}
@@ -180,9 +185,93 @@ public class Ejercicios_Conectores {
 		return imprimoAprobados(query);
 	}
 
-	public String ejercicio5c() { // 3: Asignaturas sin alumnos
-		String query = "";
+	public String ejercicio5c() { // 3: Asignaturas sin alumnos (LA QUERY ESTÁ MAL (!)(!)(!))
+		String query = "SELECT DISTINCT asignaturas.NOMBRE FROM asignaturas JOIN notas WHERE asignaturas.COD != notas.asignatura;";
 		return imprimoAsignaturas(query);
+	}
+
+	public int ejercicio6a(String patron, int altura) throws SQLException { // Consultar alumnos cuyo nombre contiene
+																			// cierto patrón y su altura es mayor que
+																			// cierto número
+		String query = "SELECT nombre, altura FROM alumnos WHERE nombre LIKE '%" + patron + "%' AND altura > " + altura
+				+ ";";
+		// SELECT nombre, altura FROM alumnos WHERE nombre LIKE '%ar%' AND altura > 175;
+
+		abrirConexion("add", "localhost", "root", "");
+		Statement stmt = this.conexion.createStatement();
+		ResultSet rs = stmt.executeQuery(query);
+		int cont = 0;
+
+		while (rs.next()) {
+			cont++;
+			System.out.println(rs.getString("nombre") + " " + rs.getInt("altura"));
+		}
+
+		stmt.close();
+		cerrarConexion();
+		return ejecuto(query);
+	}
+
+	PreparedStatement ps = null;
+
+	public void ejercicio6b(String patron, int altura) { // Consultar alumnos cuyo nombre contiene
+															// cierto patrón y su altura es mayor que
+															// cierto número con SENTENCIA PREPARADA
+		String query = "SELECT nombre, altura FROM alumnos WHERE nombre LIKE ? AND altura > ?";
+
+		try {
+			conexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/add?useServerPrepStmts=true", "root",
+					"");
+
+			if (ps == null) {
+				ps = conexion.prepareStatement(query);
+			}
+
+			ps.setString(1, patron);
+			ps.setInt(2, altura);
+			ResultSet resultado = ps.executeQuery();
+
+			while (resultado.next()) {
+				System.out.println(resultado.getString("nombre") + "" + resultado.getInt("altura"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void ejercicio7() throws SQLException { // Ejecutar métodos anteriores calculando tiempo de ejecución dentro
+													// de un bucle
+		ej = new Ejercicios_Conectores();
+		long inicio = System.currentTimeMillis();
+
+		for (long i = 0; i < 100000; i++) {
+			ej.ejercicio1("a");
+		}
+
+		long fin = System.currentTimeMillis();
+		double tiempo = (double) ((fin - inicio) / 1000);
+		System.out.printf("Tiempo total: %.2f segundos", tiempo);
+	}
+
+	public void ejercicio8(String tabla, String nombreCampo) {
+		PreparedStatement ps = null;
+		String query = "";
+
+		if (ps == null) {
+			try {
+				conexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/ad?useServerPrepStmts=true",
+						"usuario", "contraseña");
+				ps = conexion.prepareStatement(query);
+
+				ResultSet resultado = ps.executeQuery();
+
+				while (resultado.next()) {
+					System.out.println(resultado.getString(1) + "" + resultado.getString(2));
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	public static void main(String[] args) throws SQLException {
@@ -192,6 +281,14 @@ public class Ejercicios_Conectores {
 		// ej.ejercicio2(14, "Rovaro", "Byla", 182, 20, 12, "nUEVA 2");
 		// ej.ejercicio3(7, 9);
 		// ej.ejercicio4(14, "newNombre", "newApellidos", 179, 20, 12, "NUEVA ASIGN 3");
-		System.out.print(ej.ejercicio5b());
+		// System.out.println();
+		// ej.ejercicio6b("%ar%", 178);
+
+		try {
+			ej.ejercicio7();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		// ej.ejercicio8("ar", "");
 	}
 }
