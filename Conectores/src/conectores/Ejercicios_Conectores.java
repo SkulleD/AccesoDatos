@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.Statement;
 
 public class Ejercicios_Conectores {
@@ -124,7 +125,7 @@ public class Ejercicios_Conectores {
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
-				asignaturas += "\n" + rs.getString("nombreAula");
+				asignaturas += "\n" + rs.getString("NOMBRE");
 			}
 			cerrarConexion();
 		} catch (SQLException e) {
@@ -185,8 +186,8 @@ public class Ejercicios_Conectores {
 		return imprimoAprobados(query);
 	}
 
-	public String ejercicio5c() { // 3: Asignaturas sin alumnos (LA QUERY ESTÁ MAL (!)(!)(!))
-		String query = "SELECT DISTINCT asignaturas.NOMBRE FROM asignaturas JOIN notas WHERE asignaturas.COD != notas.asignatura;";
+	public String ejercicio5c() { // 3: Asignaturas sin alumnos
+		String query = "SELECT asignaturas.NOMBRE FROM asignaturas WHERE asignaturas.COD NOT IN (SELECT DISTINCT asignatura FROM notas)";
 		return imprimoAsignaturas(query);
 	}
 
@@ -234,6 +235,7 @@ public class Ejercicios_Conectores {
 			while (resultado.next()) {
 				System.out.println(resultado.getString("nombre") + "" + resultado.getInt("altura"));
 			}
+			cerrarConexion();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -241,12 +243,18 @@ public class Ejercicios_Conectores {
 
 	public void ejercicio7() throws SQLException { // Ejecutar métodos anteriores calculando tiempo de ejecución dentro
 													// de un bucle
-		ej = new Ejercicios_Conectores();
+
+		abrirConexion("add", "localhost", "root", "");
 		long inicio = System.currentTimeMillis();
 
-		for (long i = 0; i < 100000; i++) {
-			ej.ejercicio1("a");
+		try {
+			for (long i = 0; i < 10; i++) {
+				ej.ejercicio1("a");
+			}
+		} catch (SQLInvalidAuthorizationSpecException e) {
+			
 		}
+
 
 		long fin = System.currentTimeMillis();
 		double tiempo = (double) ((fin - inicio) / 1000);
@@ -281,7 +289,7 @@ public class Ejercicios_Conectores {
 		// ej.ejercicio2(14, "Rovaro", "Byla", 182, 20, 12, "nUEVA 2");
 		// ej.ejercicio3(7, 9);
 		// ej.ejercicio4(14, "newNombre", "newApellidos", 179, 20, 12, "NUEVA ASIGN 3");
-		// System.out.println();
+		// System.out.println(ej.ejercicio5c());
 		// ej.ejercicio6b("%ar%", 178);
 
 		try {
@@ -289,6 +297,6 @@ public class Ejercicios_Conectores {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		// ej.ejercicio8("ar", "");
+		 ej.ejercicio8("ar", "");
 	}
 }
