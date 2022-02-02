@@ -1,6 +1,7 @@
 package conectores;
 
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -39,7 +40,7 @@ public class Ejercicios_Conectores {
 																// caracteres en nombre
 		String query = "SELECT * FROM alumnos WHERE nombre LIKE \"%" + cadena + "%\"";
 
-		abrirConexion("add", "localhost", "root", "");
+		// abrirConexion("add", "localhost", "root", "");
 		Statement stmt = this.conexion.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		int cont = 0;
@@ -248,38 +249,162 @@ public class Ejercicios_Conectores {
 		long inicio = System.currentTimeMillis();
 
 		try {
-			for (long i = 0; i < 10; i++) {
+			for (long i = 0; i < 8000; i++) {
 				ej.ejercicio1("a");
+				System.out.println(i);
 			}
 		} catch (SQLInvalidAuthorizationSpecException e) {
-			
+
 		}
 
-
-		long fin = System.currentTimeMillis();
-		double tiempo = (double) ((fin - inicio) / 1000);
-		System.out.printf("Tiempo total: %.2f segundos", tiempo);
+		// long fin = System.currentTimeMillis();
+		// double tiempo = (double) ((fin - inicio) / 1000);
+		// System.out.printf("Tiempo total: %.2f segundos", tiempo);
+		inicio = (System.currentTimeMillis() - inicio);
+		double time = (double) inicio / 1000;
+		// System.out.printf("Time: %.3f",time);
 	}
 
-	public void ejercicio8(String tabla, String nombreCampo) {
-		PreparedStatement ps = null;
-		String query = "";
+	public int ejercicio8(String nombreTabla, String nombreCol1, String nombreCol2) {
+//	CREATE OR REPLACE TABLE nuevatabla2(
+//		columna1 VARCHAR(9),
+//		columna2 INT(15)
+//	)
+		String query = "CREATE OR REPLACE TABLE " + nombreTabla + "(" + nombreCol1 + " VARCHAR(9), " + nombreCol2
+				+ " INT(15))";
+		System.out.println(query);
+		return ejecuto(query);
+	}
 
-		if (ps == null) {
-			try {
-				conexion = DriverManager.getConnection("jdbc:mariadb://localhost:3306/ad?useServerPrepStmts=true",
-						"usuario", "contraseña");
-				ps = conexion.prepareStatement(query);
+	public void ejercicio9a(String database) { // Apartado A
+		DatabaseMetaData dbmt;
+		abrirConexion("add", "localhost", "root", "");
 
-				ResultSet resultado = ps.executeQuery();
+		try {
+			dbmt = this.conexion.getMetaData();
 
-				while (resultado.next()) {
-					System.out.println(resultado.getString(1) + "" + resultado.getString(2));
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			System.out.println("Driver name: " + dbmt.getDriverName());
+			System.out.println("Driver version: " + dbmt.getDriverVersion());
+			System.out.println("Connection URL: " + dbmt.getURL());
+			System.out.println("User: " + dbmt.getUserName());
+			System.out.println("SBGD name: " + dbmt.getDatabaseProductName());
+			System.out.println("SGBD version: " + dbmt.getDatabaseProductVersion());
+			System.out.println("Reserved SGBD words: " + dbmt.getSQLKeywords());
+
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
 		}
+
+		cerrarConexion();
+	}
+
+	public void ejercicio9b(String database) { // Apartado B
+		DatabaseMetaData dbmt;
+		ResultSet rs;
+		abrirConexion("add", "localhost", "root", "");
+
+		try {
+			dbmt = this.conexion.getMetaData();
+			rs = dbmt.getCatalogs();
+
+			while (rs.next()) {
+				System.out.println(rs.getString("TABLE_CAT"));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
+		}
+
+		cerrarConexion();
+	}
+
+	public void ejercicio9c(String database) { // Apartado C
+		DatabaseMetaData dbmt;
+		ResultSet rs;
+		abrirConexion("add", "localhost", "root", "");
+
+		try {
+			dbmt = this.conexion.getMetaData();
+			rs = dbmt.getTables(database, null, null, null);
+
+			while (rs.next()) {
+				System.out.println(
+						"Table name: " + rs.getString("TABLE_NAME") + "\nTable type:" + rs.getString("TABLE_TYPE"));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
+		}
+
+		cerrarConexion();
+	}
+
+	public void ejercicio9d(String database) { // Apartado D
+		DatabaseMetaData dbmt;
+		ResultSet rs = null;
+		abrirConexion("add", "localhost", "root", "");
+
+		try {
+			dbmt = this.conexion.getMetaData();
+			rs = dbmt.getTables(database, null, null, null);
+
+			while (rs.next()) {
+				if (rs.getString("TABLE_TYPE").equals("VIEW")) {
+					System.out.println(
+							"Table name: " + rs.getString("TABLE_NAME") + "\nTable type:" + rs.getString("TABLE_TYPE"));
+				}
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
+		}
+
+		cerrarConexion();
+	}
+
+	public void ejercicio9e(String database) { // Apartado E
+		DatabaseMetaData dbmt;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		abrirConexion("add", "localhost", "root", "");
+
+		try {
+			dbmt = this.conexion.getMetaData();
+			rs1 = dbmt.getTables(database, null, null, null);
+			rs2 = dbmt.getCatalogs();
+
+			while (rs2.next()) {
+				System.out.println(rs2.getString("TABLE_CAT"));
+			}
+			
+			System.out.println("---------");
+
+			while (rs1.next()) {
+				System.out.println(
+						"Table name: " + rs1.getString("TABLE_NAME") + "\nTable type:" + rs1.getString("TABLE_TYPE"));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
+		}
+
+		cerrarConexion();
+	}
+
+	public void ejercicio9f(String database) { // Apartado F
+		DatabaseMetaData dbmt;
+		ResultSet rs = null;
+		abrirConexion("add", "localhost", "root", "");
+
+		try {
+			dbmt = this.conexion.getMetaData();
+			rs = dbmt.getTables(database, null, null, null);
+
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
+		}
+
+		cerrarConexion();
 	}
 
 	public static void main(String[] args) throws SQLException {
@@ -292,11 +417,13 @@ public class Ejercicios_Conectores {
 		// System.out.println(ej.ejercicio5c());
 		// ej.ejercicio6b("%ar%", 178);
 
-		try {
-			ej.ejercicio7();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		 ej.ejercicio8("ar", "");
+//		try {
+//			ej.ejercicio7();
+//		} catch (SQLException e) {
+//			e.printStackTrace();
+//		}
+
+		// ej.ejercicio8("NUEVA3JAVA", "java1", "kava2");
+		ej.ejercicio9e("add");
 	}
 }
