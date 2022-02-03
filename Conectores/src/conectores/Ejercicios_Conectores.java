@@ -40,7 +40,7 @@ public class Ejercicios_Conectores {
 																// caracteres en nombre
 		String query = "SELECT * FROM alumnos WHERE nombre LIKE \"%" + cadena + "%\"";
 
-		// abrirConexion("add", "localhost", "root", "");
+		abrirConexion("add", "localhost", "root", "");
 		Statement stmt = this.conexion.createStatement();
 		ResultSet rs = stmt.executeQuery(query);
 		int cont = 0;
@@ -376,7 +376,7 @@ public class Ejercicios_Conectores {
 			while (rs2.next()) {
 				System.out.println(rs2.getString("TABLE_CAT"));
 			}
-			
+
 			System.out.println("---------");
 
 			while (rs1.next()) {
@@ -398,7 +398,34 @@ public class Ejercicios_Conectores {
 
 		try {
 			dbmt = this.conexion.getMetaData();
-			rs = dbmt.getTables(database, null, null, null);
+			rs = dbmt.getProcedures(database, null, null);
+
+			System.out.println("Stored procedures:");
+
+			while (rs.next()) {
+				System.out.println(rs.getString("PROCEDURE_NAME"));
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
+		}
+
+		cerrarConexion();
+	}
+
+	public void ejercicio9g(String database) { // Apartado G
+		DatabaseMetaData dbmt;
+		ResultSet rs = null;
+		abrirConexion("add", "localhost", "root", "");
+
+		try {
+			dbmt = this.conexion.getMetaData();
+			rs = dbmt.getColumns(database, null, null, null);
+
+			while (rs.next()) {
+				if (rs.getString("COLUMN_NAME").startsWith("a")) {
+					System.out.println(rs.getInt("COLUMN_POSITION"));
+				}
+			}
 
 		} catch (SQLException e) {
 			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
@@ -424,6 +451,6 @@ public class Ejercicios_Conectores {
 //		}
 
 		// ej.ejercicio8("NUEVA3JAVA", "java1", "kava2");
-		ej.ejercicio9e("add");
+		ej.ejercicio9g("add");
 	}
 }
