@@ -2,12 +2,17 @@ package conectores;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.Statement;
+import java.util.Enumeration;
+
+
 
 public class Ejercicios_Conectores {
 	private Connection conexion;
@@ -278,7 +283,7 @@ public class Ejercicios_Conectores {
 
 	public void ejercicio9a(String database) { // Apartado A
 		DatabaseMetaData dbmt;
-		abrirConexion("add", "localhost", "root", "");
+		abrirConexion(database, "localhost", "root", "");
 
 		try {
 			dbmt = this.conexion.getMetaData();
@@ -301,7 +306,7 @@ public class Ejercicios_Conectores {
 	public void ejercicio9b(String database) { // Apartado B
 		DatabaseMetaData dbmt;
 		ResultSet rs;
-		abrirConexion("add", "localhost", "root", "");
+		abrirConexion(database, "localhost", "root", "");
 
 		try {
 			dbmt = this.conexion.getMetaData();
@@ -321,7 +326,7 @@ public class Ejercicios_Conectores {
 	public void ejercicio9c(String database) { // Apartado C
 		DatabaseMetaData dbmt;
 		ResultSet rs;
-		abrirConexion("add", "localhost", "root", "");
+		abrirConexion(database, "localhost", "root", "");
 
 		try {
 			dbmt = this.conexion.getMetaData();
@@ -342,7 +347,7 @@ public class Ejercicios_Conectores {
 	public void ejercicio9d(String database) { // Apartado D
 		DatabaseMetaData dbmt;
 		ResultSet rs = null;
-		abrirConexion("add", "localhost", "root", "");
+		abrirConexion(database, "localhost", "root", "");
 
 		try {
 			dbmt = this.conexion.getMetaData();
@@ -366,7 +371,7 @@ public class Ejercicios_Conectores {
 		DatabaseMetaData dbmt;
 		ResultSet rs1 = null;
 		ResultSet rs2 = null;
-		abrirConexion("add", "localhost", "root", "");
+		abrirConexion(database, "localhost", "root", "");
 
 		try {
 			dbmt = this.conexion.getMetaData();
@@ -394,7 +399,7 @@ public class Ejercicios_Conectores {
 	public void ejercicio9f(String database) { // Apartado F
 		DatabaseMetaData dbmt;
 		ResultSet rs = null;
-		abrirConexion("add", "localhost", "root", "");
+		abrirConexion(database, "localhost", "root", "");
 
 		try {
 			dbmt = this.conexion.getMetaData();
@@ -415,7 +420,7 @@ public class Ejercicios_Conectores {
 	public void ejercicio9g(String database) { // Apartado G
 		DatabaseMetaData dbmt;
 		ResultSet rs = null;
-		abrirConexion("add", "localhost", "root", "");
+		abrirConexion(database, "localhost", "root", "");
 
 		try {
 			dbmt = this.conexion.getMetaData();
@@ -423,7 +428,15 @@ public class Ejercicios_Conectores {
 
 			while (rs.next()) {
 				if (rs.getString("COLUMN_NAME").startsWith("a")) {
-					System.out.println(rs.getInt("COLUMN_POSITION"));
+					System.out.println("POSITION: " + rs.getInt("ORDINAL_POSITION"));
+					System.out.println("DATABASE: " + rs.getString("TABLE_CAT"));
+					System.out.println("TABLE NAME: " + rs.getString("TABLE_NAME"));
+					System.out.println("COLUMN NAME: " + rs.getString("COLUMN_NAME"));
+					System.out.println("DATA_TYPE: " + rs.getString("DATA_TYPE"));
+					System.out.println("COLUMN SIZE: " + rs.getString("COLUMN_SIZE"));
+					System.out.println("IS NULLABLE?: " + rs.getString("IS_NULLABLE"));
+					System.out.println("IS AUTOINCREMENT?: " + rs.getString("IS_AUTOINCREMENT"));
+					System.out.println("-----------------------");
 				}
 			}
 
@@ -432,6 +445,64 @@ public class Ejercicios_Conectores {
 		}
 
 		cerrarConexion();
+	}
+
+	public void ejercicio9h(String database) { // Apartado H
+		DatabaseMetaData dbmt;
+		ResultSet rs1 = null;
+		ResultSet rs2 = null;
+		abrirConexion(database, "localhost", "root", "");
+
+		try {
+			dbmt = this.conexion.getMetaData();
+			rs1 = dbmt.getPrimaryKeys(database, null, null);
+			rs2 = dbmt.getExportedKeys(database, null, null);
+
+			System.out.println("---Claves primarias---");
+			while (rs1.next()) { // Claves primarias
+				System.out.println(rs1.getString("COLUMN_NAME"));
+			}
+
+			System.out.println("---Claves foráneas---");
+			while (rs2.next()) { // Claves foráneas
+				System.out.println(rs2.getString("FKCOLUMN_NAME"));
+			}
+
+		} catch (SQLException e) {
+			System.out.println("Error al obtener datos" + e.getLocalizedMessage());
+		}
+
+		cerrarConexion();
+	}
+
+	public void ejercicio10(String query) throws SQLException { // Ejercicio 10
+		abrirConexion("add", "localhost", "root", "");
+		// String query = "SELECT *, " + columna + " AS " + as + " FROM " + tabla;
+		Statement stmt = this.conexion.createStatement();
+		ResultSet filas = stmt.executeQuery(query);
+		ResultSetMetaData rsmd = filas.getMetaData();
+
+		for (int i = 1; i <= rsmd.getColumnCount(); i++) {
+			System.out.println("Nombre: " + rsmd.getColumnName(i) + "\tAlias: " + rsmd.getColumnLabel(i) + "\tTipo: "
+					+ rsmd.getColumnType(i) + "\tAutoincrement: " + rsmd.isAutoIncrement(i) + "\tNull: "
+					+ rsmd.isNullable(i));
+		}
+	}
+
+	public void ejercicio11() { // Ejercicio 11
+		abrirConexion("add", "localhost", "root", "");
+
+		Enumeration<Driver> drivers= DriverManager.getDrivers();
+		Driver aux;
+		
+		while (drivers.hasMoreElements()) {
+			aux=drivers.nextElement();
+			System.out.println(aux.toString());
+		}
+	}
+	
+	public void ejercicio13() {
+		
 	}
 
 	public static void main(String[] args) throws SQLException {
@@ -445,12 +516,13 @@ public class Ejercicios_Conectores {
 		// ej.ejercicio6b("%ar%", 178);
 
 //		try {
-//			ej.ejercicio7();
+//			ej.ejercicio10("SELECT *, nombre AS non FROM alumnos");
 //		} catch (SQLException e) {
 //			e.printStackTrace();
 //		}
 
 		// ej.ejercicio8("NUEVA3JAVA", "java1", "kava2");
-		ej.ejercicio9g("add");
+		// ej.ejercicio9g("add");
+		 ej.ejercicio11();
 	}
 }
