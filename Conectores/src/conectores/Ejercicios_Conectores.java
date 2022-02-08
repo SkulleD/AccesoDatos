@@ -12,8 +12,6 @@ import java.sql.SQLInvalidAuthorizationSpecException;
 import java.sql.Statement;
 import java.util.Enumeration;
 
-
-
 public class Ejercicios_Conectores {
 	private Connection conexion;
 	private static Ejercicios_Conectores ej;
@@ -63,11 +61,10 @@ public class Ejercicios_Conectores {
 
 	public int ejecuto(String query) {
 		abrirConexion("add", "localhost", "root", "");
-		Statement stmt;
 		int insert = -1;
 
-		try {
-			stmt = this.conexion.createStatement();
+		try (Statement stmt = this.conexion.createStatement()) {
+
 			insert = stmt.executeUpdate(query);
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -84,7 +81,7 @@ public class Ejercicios_Conectores {
 		ResultSet rs;
 		String aulas = "";
 
-		try (Statement stmt = this.conexion.createStatement();) {
+		try (Statement stmt = this.conexion.createStatement()) {
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
@@ -101,12 +98,10 @@ public class Ejercicios_Conectores {
 	public String imprimoAprobados(String query) { // Imprime los alumnos, asignaturas y notas de los alumnos que HAN
 													// APROBADO
 		abrirConexion("add", "localhost", "root", "");
-		Statement stmt;
 		ResultSet rs;
 		String alumnos = "";
 
-		try {
-			stmt = this.conexion.createStatement();
+		try (Statement stmt = this.conexion.createStatement()) {
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
@@ -122,22 +117,20 @@ public class Ejercicios_Conectores {
 
 	public String imprimoAsignaturas(String query) { // Imprime las asignaturas SIN ALUMNOS
 		abrirConexion("add", "localhost", "root", "");
-		Statement stmt;
 		ResultSet rs;
 		String asignaturas = "";
 
-		try {
-			stmt = this.conexion.createStatement();
+		try (Statement stmt = this.conexion.createStatement()) {
 			rs = stmt.executeQuery(query);
 
 			while (rs.next()) {
 				asignaturas += "\n" + rs.getString("NOMBRE");
 			}
-			cerrarConexion();
 		} catch (SQLException e) {
 			e.printStackTrace();
-			cerrarConexion();
 		}
+
+		cerrarConexion();
 		return asignaturas;
 	}
 
@@ -197,9 +190,10 @@ public class Ejercicios_Conectores {
 		return imprimoAsignaturas(query);
 	}
 
-	public int ejercicio6a(String patron, int altura) throws SQLException { // Consultar alumnos cuyo nombre contiene
-																			// cierto patrón y su altura es mayor que
-																			// cierto número
+	public void ejercicio6a(String patron, int altura) throws SQLException { // Consultar alumnos cuyo nombre contiene
+																				// cierto patrón y su altura es mayor
+																				// que
+																				// cierto número
 		String query = "SELECT nombre, altura FROM alumnos WHERE nombre LIKE '%" + patron + "%' AND altura > " + altura
 				+ ";";
 		// SELECT nombre, altura FROM alumnos WHERE nombre LIKE '%ar%' AND altura > 175;
@@ -216,7 +210,6 @@ public class Ejercicios_Conectores {
 
 		stmt.close();
 		cerrarConexion();
-		return ejecuto(query);
 	}
 
 	PreparedStatement ps = null;
@@ -241,10 +234,11 @@ public class Ejercicios_Conectores {
 			while (resultado.next()) {
 				System.out.println(resultado.getString("nombre") + "" + resultado.getInt("altura"));
 			}
-			cerrarConexion();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+		cerrarConexion();
 	}
 
 	public void ejercicio7() throws SQLException { // Ejecutar métodos anteriores calculando tiempo de ejecución dentro
@@ -270,13 +264,10 @@ public class Ejercicios_Conectores {
 		// System.out.printf("Time: %.3f",time);
 	}
 
-	public int ejercicio8(String nombreTabla, String nombreCol1, String nombreCol2) {
-//	CREATE OR REPLACE TABLE nuevatabla2(
-//		columna1 VARCHAR(9),
-//		columna2 INT(15)
-//	)
-		String query = "CREATE OR REPLACE TABLE " + nombreTabla + "(" + nombreCol1 + " VARCHAR(9), " + nombreCol2
-				+ " INT(15))";
+	public int ejercicio8(String nombreTabla, String nombreCol1, String tipoColumna) {
+		// ALTER TABLE nueva3java ADD ej8bien VARCHAR(10);
+
+		String query = "ALTER TABLE " + nombreTabla + " ADD " + nombreCol1 + " " + tipoColumna;
 		System.out.println(query);
 		return ejecuto(query);
 	}
@@ -375,7 +366,7 @@ public class Ejercicios_Conectores {
 
 		try {
 			dbmt = this.conexion.getMetaData();
-			rs1 = dbmt.getTables(database, null, null, null);
+			rs1 = dbmt.getTables(null, null, null, null);
 			rs2 = dbmt.getCatalogs();
 
 			while (rs2.next()) {
@@ -424,20 +415,18 @@ public class Ejercicios_Conectores {
 
 		try {
 			dbmt = this.conexion.getMetaData();
-			rs = dbmt.getColumns(database, null, null, null);
+			rs = dbmt.getColumns(database, null, "a%", null);
 
 			while (rs.next()) {
-				if (rs.getString("COLUMN_NAME").startsWith("a")) {
-					System.out.println("POSITION: " + rs.getInt("ORDINAL_POSITION"));
-					System.out.println("DATABASE: " + rs.getString("TABLE_CAT"));
-					System.out.println("TABLE NAME: " + rs.getString("TABLE_NAME"));
-					System.out.println("COLUMN NAME: " + rs.getString("COLUMN_NAME"));
-					System.out.println("DATA_TYPE: " + rs.getString("DATA_TYPE"));
-					System.out.println("COLUMN SIZE: " + rs.getString("COLUMN_SIZE"));
-					System.out.println("IS NULLABLE?: " + rs.getString("IS_NULLABLE"));
-					System.out.println("IS AUTOINCREMENT?: " + rs.getString("IS_AUTOINCREMENT"));
-					System.out.println("-----------------------");
-				}
+				System.out.println("POSITION: " + rs.getInt("ORDINAL_POSITION"));
+				System.out.println("DATABASE: " + rs.getString("TABLE_CAT"));
+				System.out.println("TABLE NAME: " + rs.getString("TABLE_NAME"));
+				System.out.println("COLUMN NAME: " + rs.getString("COLUMN_NAME"));
+				System.out.println("DATA_TYPE: " + rs.getString("DATA_TYPE"));
+				System.out.println("COLUMN SIZE: " + rs.getString("COLUMN_SIZE"));
+				System.out.println("IS NULLABLE?: " + rs.getString("IS_NULLABLE"));
+				System.out.println("IS AUTOINCREMENT?: " + rs.getString("IS_AUTOINCREMENT"));
+				System.out.println("-----------------------");
 			}
 
 		} catch (SQLException e) {
@@ -492,17 +481,17 @@ public class Ejercicios_Conectores {
 	public void ejercicio11() { // Ejercicio 11
 		abrirConexion("add", "localhost", "root", "");
 
-		Enumeration<Driver> drivers= DriverManager.getDrivers();
+		Enumeration<Driver> drivers = DriverManager.getDrivers();
 		Driver aux;
-		
+
 		while (drivers.hasMoreElements()) {
-			aux=drivers.nextElement();
+			aux = drivers.nextElement();
 			System.out.println(aux.toString());
 		}
 	}
-	
-	public void ejercicio13() {
-		
+
+	public void ejercicio13() { // Ejercicio 13
+
 	}
 
 	public static void main(String[] args) throws SQLException {
@@ -521,8 +510,8 @@ public class Ejercicios_Conectores {
 //			e.printStackTrace();
 //		}
 
-		// ej.ejercicio8("NUEVA3JAVA", "java1", "kava2");
-		// ej.ejercicio9g("add");
-		 ej.ejercicio11();
+		// ej.ejercicio8("nueva3java", "javaFunciona", "varchar(10)");
+		// ej.ejercicio9e("add");
+		// ej.ejercicio11();
 	}
 }
