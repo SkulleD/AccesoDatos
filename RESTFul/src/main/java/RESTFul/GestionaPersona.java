@@ -8,15 +8,14 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 @Path("/persona")
-public class GestionaPersona {
+public class GestionaPersona { // EJERCICIO 2
 	static Persona persona;
 	
 	@GET
 	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
 	public Persona datosPersona() {
-		return new Persona(42, "Álvaro", false, "Hombre");
+		return new Persona(42, "Alvaro", false, "Hombre");
 	}
-	
 	
 	@POST
 	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})

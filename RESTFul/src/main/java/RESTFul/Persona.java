@@ -3,7 +3,7 @@ package RESTFul;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class Persona {
+public class Persona { // EJERCICIO 1
 	private int id;
 	private String cadena;
 	private boolean casado;
