@@ -1,5 +1,6 @@
 package RESTFul;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -20,6 +21,7 @@ public class Persona { // EJERCICIO 1
 		this.casado = casado;
 		this.sexo = sexo;
 	}
+	@XmlAttribute
 	public int getId() {
 		return id;
 	}
