@@ -13,6 +13,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -23,15 +24,15 @@ public class Personas { // EJERCICIO 3
 	@POST
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON }) // 1
 	@Produces(MediaType.TEXT_PLAIN)
-	public String guardar(Persona persona) {
+	public Response guardar(Persona persona) {
 		personas.add(persona);
-		return "Todo perfe";
+		return Response.ok("Todo perfe (RESPONSE)").build(); // 12
 	}
 
 	@GET
-	@Produces(MediaType.APPLICATION_XML) // 2
-	public ArrayList<Persona> listar() {
-		return this.personas;
+	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) // 2
+	public Response listar() {
+		return Response.ok(this.personas).build(); // 12
 	}
 
 	@GET
@@ -62,13 +63,13 @@ public class Personas { // EJERCICIO 3
 	@POST
 	@Path("add")
 	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) // 7
-	@Produces(MediaType.TEXT_PLAIN)
-	public String anadir(ArrayList<Persona> personasList) {
+	//@Produces(MediaType.APPLICATION_JSON)
+	public Response anadir(ArrayList<Persona> personasList) {
 		for (int i = 0; i < personasList.size(); i++) {
 			personas.add(personasList.get(i));
 		}
 		
-		return "Funcionoooooo";
+		return Response.ok("Funcionooooo (RESPONSE)").build(); // 12
 	}
 	
 	@DELETE
@@ -87,7 +88,15 @@ public class Personas { // EJERCICIO 3
 	@GET
 	@Path("XML")
 	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON}) // 10
-	public  ArrayList<Persona> devolver() {
+	public ArrayList<Persona> devolver() {
+		return this.personas;
+	}
+	
+	@GET
+	@Path("galego")
+	@Produces(MediaType.TEXT_PLAIN) // 11
+	public ArrayList<Persona> enGalego() {
+		
 		return this.personas;
 	}
 	

@@ -1,6 +1,7 @@
 package RESTFul;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
@@ -28,6 +29,7 @@ public class Persona { // EJERCICIO 1
 	public void setId(int id) {
 		this.id = id;
 	}
+
 	public String getCadena() {
 		return cadena;
 	}
