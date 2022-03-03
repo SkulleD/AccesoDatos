@@ -38,12 +38,13 @@ public class Personas { // EJERCICIO 3
 	@GET
 	@Path("{nombre}")
 	@Produces(MediaType.APPLICATION_JSON) // 3
-	public Persona ver(@PathParam("nombre") String nombre) {
+	public Response ver(@PathParam("nombre") String nombre) {
 		for (Persona perso : personas) {
-			if (perso.getCadena() == nombre) {
-				return perso;
+			if (perso.getCadena().equals(nombre)) {
+				return Response.ok(perso).build();
 			}
 		}
+		System.out.println("peté");
 		return null;
 	}
 
