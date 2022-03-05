@@ -10,16 +10,16 @@ import javax.ws.rs.core.MediaType;
 @Path("/persona")
 public class GestionaPersona { // EJERCICIO 2
 	static Persona persona;
-	
+
 	@GET
-	@Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Persona datosPersona() {
 		return new Persona(42, "Alvaro", false, "Hombre");
 	}
-	
+
 	@POST
-	@Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-	@Produces (MediaType.TEXT_PLAIN)
+	@Consumes({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
+	@Produces(MediaType.TEXT_PLAIN)
 	public String guardar(Persona persona) {
 		this.persona = persona;
 		return "Ta bien";

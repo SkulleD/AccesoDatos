@@ -14,6 +14,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -22,7 +23,7 @@ public class Personas { // EJERCICIO 3
 	static ArrayList<Persona> personas = new ArrayList<>();
 
 	@POST
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON }) // 1
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON }) // 1
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response guardar(Persona persona) {
 		personas.add(persona);
@@ -30,7 +31,7 @@ public class Personas { // EJERCICIO 3
 	}
 
 	@GET
-	@Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) // 2
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON }) // 2
 	public Response listar() {
 		return Response.ok(this.personas).build(); // 12
 	}
@@ -45,61 +46,59 @@ public class Personas { // EJERCICIO 3
 			}
 		}
 		System.out.println("peté");
-		return null;
+		return Response.status(Status.NOT_FOUND).build();
 	}
 
 	@GET
 	@Path("buscar")
 	@Produces(MediaType.APPLICATION_JSON) // 4. DefaultValue es del apartado 9
-	public Persona ver1(@DefaultValue("Álvaro") @QueryParam("nombre") String nombre) {
+	public Response ver1(@DefaultValue("Álvaro") @QueryParam("nombre") String nombre) {
 		System.out.println(nombre);
 		for (Persona perso : personas) {
 			if (perso.getCadena().toLowerCase().equals(nombre.toLowerCase())) {
-				return perso;
+				return Response.ok(perso).build();
 			}
 		}
-		return null;
+		return Response.status(Status.NOT_FOUND).build();
 	}
 
 	@POST
 	@Path("add")
-	@Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON}) // 7
-	//@Produces(MediaType.APPLICATION_JSON)
+	@Consumes({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON }) // 7
+	// @Produces(MediaType.APPLICATION_JSON)
 	public Response anadir(ArrayList<Persona> personasList) {
 		for (int i = 0; i < personasList.size(); i++) {
 			personas.add(personasList.get(i));
 		}
-		
+
 		return Response.ok("Funcionooooo (RESPONSE)").build(); // 12
 	}
-	
+
 	@DELETE
 	@Path("{id}")
 	@Produces(MediaType.TEXT_PLAIN) // 8
-	public String borrar(@PathParam("id") int id) {
+	public Response borrar(@PathParam("id") int id) {
 		for (int i = 0; i <= personas.size(); i++) {
 			if (personas.get(i).getId() == id) {
 				personas.remove(i);
-				return "La persona con el id: " + id + " ha sido borrada";
+				return Response.ok("Funciona (RESPONSE)").build();
 			}
 		}
-		return "Un error ocurrió";
+		return Response.status(Status.NOT_FOUND).build();
 	}
-	
+
 	@GET
 	@Path("XML")
-	@Produces({MediaType.APPLICATION_XML,MediaType.APPLICATION_JSON}) // 10
-	public ArrayList<Persona> devolver() {
-		return this.personas;
+	@Produces({ MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON }) // 10
+	public Response devolver() {
+		return Response.ok(this.personas).build();
 	}
-	
+
 	@GET
 	@Path("galego")
 	@Produces(MediaType.TEXT_PLAIN) // 11
 	public ArrayList<Persona> enGalego() {
-		
+
 		return this.personas;
 	}
-	
-	
 }
