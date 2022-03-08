@@ -45,16 +45,17 @@ public class Personas { // EJERCICIO 3
 				return Response.ok(perso).build();
 			}
 		}
-		System.out.println("petÈ");
+		System.out.println("pet√©");
 		return Response.status(Status.NOT_FOUND).build();
 	}
 
 	@GET
 	@Path("buscar")
 	@Produces(MediaType.APPLICATION_JSON) // 4. DefaultValue es del apartado 9
-	public Response ver1(@DefaultValue("¡lvaro") @QueryParam("nombre") String nombre) {
+	public Response ver1(@DefaultValue("√Ålvaro") @QueryParam("nombre") String nombre) {
 		System.out.println(nombre);
 		for (Persona perso : personas) {
+		        // (perso.getCadena().equalsIgnoreCase(nombre)) {
 			if (perso.getCadena().toLowerCase().equals(nombre.toLowerCase())) {
 				return Response.ok(perso).build();
 			}
