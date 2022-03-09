@@ -24,7 +24,7 @@ public class Deportistas {
 	public void abrirConexion(String bd, String servidor, String usuario, String password) {
 		try {
 			String url = String.format("jdbc:mariadb://%s:3306/%s", servidor, bd);
-			this.conexion = DriverManager.getConnection(url, usuario, password); // Establecemos la conexión con la BD
+			this.conexion = DriverManager.getConnection(url, usuario, password); // Establecemos la conexiÃ³n con la BD
 			if (this.conexion != null)
 				System.out.println("Conectado a la base de datos " + bd + " en " + servidor);
 			else
@@ -32,7 +32,7 @@ public class Deportistas {
 		} catch (SQLException e) {
 			System.out.println("SQLException: " + e.getLocalizedMessage());
 			System.out.println("SQLState: " + e.getSQLState());
-			System.out.println("Código error: " + e.getErrorCode());
+			System.out.println("CÃ³digo error: " + e.getErrorCode());
 		}
 	}
 
@@ -40,29 +40,16 @@ public class Deportistas {
 		try {
 			this.conexion.close();
 		} catch (SQLException e) {
-			System.out.println("Error al cerrar la conexión: " + e.getLocalizedMessage());
+			System.out.println("Error al cerrar la conexiÃ³n: " + e.getLocalizedMessage());
 		}
 	}
 
 	// EJERCICIO 1
-
-	public void Todos(String query) throws SQLException {
-		try (Statement stmt = this.conexion.createStatement()) {
-			ResultSet rs = stmt.executeQuery(query);
-
-			while (rs.next()) {
-				System.out.println(rs.getString("nombre"));
-			}
-		}
-	}
-
 	@GET
-	@Path("todos") // De Óscar
+	@Path("todos")
 	@Produces({ MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML })
 	public Response Todos() {
 		String query = "Select * from deportistas";
-		// baseDeDatos.abrirConexion("ad_tema6", "localhost", "root", "");
-		// abrirConexion("ad_tema6","localhost","root","");
 		try (Statement st = conexion.createStatement()) {
 			ResultSet rs = st.executeQuery(query);
 			Deportista deportista;
@@ -71,7 +58,7 @@ public class Deportistas {
 			}
 			return Response.ok(this.deportistas).build();
 		} catch (SQLException e) {
-			System.out.println("Alvaro dejo el resto en tus manos");
+
 		}
 		return Response.status(Status.BAD_REQUEST).type(MediaType.APPLICATION_JSON).build();
 	}
